@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block titulo %} Listado usuarios{% endblock %}
+{% block contenido_principal %}
+
+<h2>Listado usuarios</h2>
+
+<!--Búsqueda-->
+<div class="row">
+    <div id="custom-search-input ">
+        <form method="get" action="/usuarios">
+            <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5 pull-right"><input type="text"
+                                                                                           class="search-query form-control"
+                                                                                           placeholder="búsqueda"
+                                                                                           name="busqueda"/><span
+                    class="input-group-btn"><button class="btn" type="submit"><span
+                    class="glyphicon glyphicon-search"></span></button></span></div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.surname }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--Paginaciónmostrarlaactual y 2 anterioresy dossiguientes-->
+<div class="row text-center">
+    <ul class="pagination">
+        {% for pagina in paginas %}
+        <li class="page-item" id="pi-{{pagina}}">
+            <a class="page-link" href="/usuarios?pg={{pagina}}">{{pagina}}</a>
+        </li>
+        {% endfor %}
+        <script>
+            $( "#pi-{{actual}}" ).addClass("active");
+        </script>
+    </ul>
+</div>
+
+{% endblock %}

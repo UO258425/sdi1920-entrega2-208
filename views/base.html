@@ -25,10 +25,10 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li id="mTienda" class="active"><a href="/tienda">Tienda</a></li>
-                <li id="mPublicaciones"><a href="/publicaciones">Publicaciones</a></li>
-                <li id="mFavoritos"><a href="/favoritos">Favoritos</a></li>
-                <li id="mCompras"><a href="/compras">Compras</a></li>
+                <li id="mTienda" class="active"><a href="/">Home</a></li>
+                {% if sesion %}
+                    <li><a href="/usuarios">Ver usuarios</a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if sesion %}
