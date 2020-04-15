@@ -88,6 +88,7 @@ routerUsuarioSession.use(function (req, res, next) {
 });
 app.use("/usuarios", routerUsuarioSession);
 app.use("/invitacion", routerUsuarioSession);
+app.use("/invitaciones", routerUsuarioSession);
 app.use("/amigos", routerUsuarioSession);
 
 

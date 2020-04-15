@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %} Listado invitaciones{% endblock %}
+{% block contenido_principal %}
+
+
+<h2>Listado invitaciones de amistad</h2>
+
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Aceptar</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for invitacion in invitaciones %}
+        <tr>
+            <td>{{ invitacion.dateTime }}</td>
+            <td>{{ invitacion.from.name}}</td>
+            <td>{{ invitacion.from.surname }}</td>
+            <td><button type="button" class="btn btn-info"><a href="/invitacion/aceptar/{{ user._id.toString() }}" style="color:white">Aceptar</a></button></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--Paginaciónmostrarlaactual y 2 anterioresy dossiguientes-->
+<div class="row text-center">
+    <ul class="pagination">
+        {% for pagina in paginas %}
+        <li class="page-item" id="pi-{{pagina}}">
+            <a class="page-link" href="/invitaciones?pg={{pagina}}">{{pagina}}</a>
+        </li>
+        {% endfor %}
+        <script>
+            $( "#pi-{{actual}}" ).addClass("active");
+        </script>
+    </ul>
+</div>
+
+{% endblock %}

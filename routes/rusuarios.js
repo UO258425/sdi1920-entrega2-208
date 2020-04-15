@@ -144,7 +144,9 @@ module.exports = function (app, swig, gestorBD) {
                         paginas: paginas,
                         actual: pg,
                         mensaje: req.session.mensaje,
-                        tipoMensaje: req.session.tipoMensaje
+                        tipoMensaje: req.session.tipoMensaje,
+                        sesion:req.session.usuario
+
                     });
                 req.session.mensaje = null;
                 req.session.tipoMensaje = null;
