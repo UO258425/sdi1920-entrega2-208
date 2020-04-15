@@ -114,9 +114,9 @@ module.exports = function (app, swig, gestorBD) {
         if (req.query.busqueda != null && req.query.busqueda !== "") {
             criterio = {
                 $or:[
-                    {"email": {$regex: ".*" + req.query.busqueda + ".*"}},
-                    {"name": {$regex: ".*" + req.query.busqueda + ".*"}},
-                    {"surname": {$regex: ".*" + req.query.busqueda + ".*"}}
+                    {email: {$regex: ".*" + req.query.busqueda + ".*"}},
+                    {name: {$regex: ".*" + req.query.busqueda + ".*"}},
+                    {surname: {$regex: ".*" + req.query.busqueda + ".*"}}
                 ]
             };
         }
@@ -142,8 +142,12 @@ module.exports = function (app, swig, gestorBD) {
                     {
                         users: users,
                         paginas: paginas,
-                        actual: pg
+                        actual: pg,
+                        mensaje: req.session.mensaje,
+                        tipoMensaje: req.session.tipoMensaje
                     });
+                req.session.mensaje = null;
+                req.session.tipoMensaje = null;
                 res.send(respuesta);
             }
         });

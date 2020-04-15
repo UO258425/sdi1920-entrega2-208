@@ -87,7 +87,7 @@ routerUsuarioSession.use(function (req, res, next) {
     }
 });
 app.use("/usuarios", routerUsuarioSession);
-app.use("/invitaciones", routerUsuarioSession);
+app.use("/invitacion", routerUsuarioSession);
 app.use("/amigos", routerUsuarioSession);
 
 
@@ -101,6 +101,7 @@ app.set('crypto', crypto);
 
 
 require("./routes/rusuarios.js")(app, swig, gestorBD);
+require("./routes/rinvitacion.js")(app, swig, gestorBD);
 require("./routes/rerror.js")(app, swig);
 
 
