@@ -22,7 +22,7 @@
             <td>{{ invitacion.dateTime }}</td>
             <td>{{ invitacion.from.name}}</td>
             <td>{{ invitacion.from.surname }}</td>
-            <td><button type="button" class="btn btn-info"><a href="/invitacion/aceptar/{{ user._id.toString() }}" style="color:white">Aceptar</a></button></td>
+            <td><button type="button" class="btn btn-info"><a href="/invitacion/aceptar/{{ invitacion._id.toString() }}" style="color:white">Aceptar</a></button></td>
         </tr>
         {% endfor %}
         </tbody>
