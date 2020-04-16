@@ -139,19 +139,24 @@ module.exports = function (app, swig, gestorBD) {
                         paginas.push(i);
                     }
                 }
-                let respuesta = swig.renderFile('views/usersList.html',
-                    {
-                        users: users,
-                        paginas: paginas,
-                        actual: pg,
-                        mensaje: req.session.mensaje,
-                        tipoMensaje: req.session.tipoMensaje,
-                        sesion:req.session.usuario
+                gestorBD.obtenerUsuarios({email:req.session.usuario}, function(usuarios){
 
-                    });
-                req.session.mensaje = null;
-                req.session.tipoMensaje = null;
-                res.send(respuesta);
+                    let respuesta = swig.renderFile('views/usersList.html',
+                        {
+                            users: users,
+                            paginas: paginas,
+                            actual: pg,
+                            mensaje: req.session.mensaje,
+                            tipoMensaje: req.session.tipoMensaje,
+                            sesion:req.session.usuario,
+                            friends: usuarios[0].friends
+
+                        });
+                    req.session.mensaje = null;
+                    req.session.tipoMensaje = null;
+                    res.send(respuesta);
+                });
+
             }
         });
     });

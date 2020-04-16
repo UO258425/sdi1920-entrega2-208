@@ -35,7 +35,11 @@
             <td>{{ user.email }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.surname }}</td>
+            {% if friends.includes(user.email) or user.email===sesion %}
+            <td></td>
+            {% else %}
             <td><button type="button" class="btn btn-info"><a href="/invitacion/enviar/{{ user._id.toString() }}" style="color:white">Enviar</a></button></td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>

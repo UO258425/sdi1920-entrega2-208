@@ -38,6 +38,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 let gestorBD = require("./modules/gestorDB.js");
 gestorBD.init(app, mongo);
 
+
+
 // routerUsuarioToken
 var routerUsuarioToken = express.Router();
 routerUsuarioToken.use(function(req, res, next) {
@@ -78,12 +80,10 @@ app.use('/api/mensajes', routerUsuarioToken);
 // routerUsuarioSession
 let routerUsuarioSession = express.Router();
 routerUsuarioSession.use(function (req, res, next) {
-    console.log("routerUsuarioSession");
     if (req.session.usuario) {
         // dejamos correr la petición
         next();
     } else {
-        console.log("va a : " + req.session.destino)
         res.redirect("/login");
     }
 });
@@ -100,6 +100,9 @@ app.set('db', 'mongodb://mysocialnetworkadmin:4P10lOy5gR0px5s5@mysocialnetwork-s
 app.set('clave', 'abcdefg');
 app.set('crypto', crypto);
 
+let inicializadorBD = require("./modules/initializeDatabase.js");
+inicializadorBD.init(app, mongo);
+inicializadorBD.restartDatabase();
 
 require("./routes/rusuarios.js")(app, swig, gestorBD);
 require("./routes/rinvitacion.js")(app, swig, gestorBD);

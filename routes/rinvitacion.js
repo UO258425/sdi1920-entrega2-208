@@ -80,6 +80,7 @@ module.exports = function (app, swig, gestorBD) {
                     } else {
                         let invitacionesCompletas = invitaciones.map(invi => {
                             invi.from = users.find(user => user.email === invi.from);
+                            invi.dateTime = new Date(invi.dateTime).toLocaleDateString("es-ES") + " " +  new Date(invi.dateTime).toLocaleTimeString("es-ES");
                             return invi;
                         });
 
