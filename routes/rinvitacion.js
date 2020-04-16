@@ -146,7 +146,19 @@ module.exports = function (app, swig, gestorBD) {
                                         req.session.tipoMensaje = "alert-danger";
                                         res.redirect("/invitaciones");
                                     } else {
-                                        gestorBD.borrarInvitacion({"_id": gestorBD.mongo.ObjectID(req.params.to_id)}, function (isDeleted) {
+                                        let criterio = {
+                                            $or:[
+                                                {$and:[
+                                                        {to:{ $eq: usuarios[0].email}},
+                                                        {from:{ $eq: usuarios[1].email}}
+                                                    ]},
+                                                {$and:[
+                                                        {to:{ $eq: usuarios[1].email}},
+                                                        {from:{ $eq: usuarios[0].email}}
+                                                    ]}
+                                            ]
+                                        };
+                                        gestorBD.borrarInvitacion(criterio, function (isDeleted) {
                                             if (isDeleted === false) {
                                                 req.session.mensaje = "Error: no se pudo borrar la invitacion";
                                                 req.session.tipoMensaje = "alert-danger";

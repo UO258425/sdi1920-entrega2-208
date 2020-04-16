@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titulo %} Listado amigos{% endblock %}
+{% block contenido_principal %}
+
+
+<h2>Listado amigos</h2>
+
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for friend in friends %}
+        <tr>
+            <td>{{ friend.name }}</td>
+            <td>{{ friend.surname}}</td>
+            <td>{{ friend.email }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--Paginaciónmostrarlaactual y 2 anterioresy dossiguientes-->
+<div class="row text-center">
+    <ul class="pagination">
+        {% for pagina in paginas %}
+        <li class="page-item" id="pi-{{pagina}}">
+            <a class="page-link" href="/amigos?pg={{pagina}}">{{pagina}}</a>
+        </li>
+        {% endfor %}
+        <script>
+            $( "#pi-{{actual}}" ).addClass("active");
+        </script>
+    </ul>
+</div>
+
+{% endblock %}

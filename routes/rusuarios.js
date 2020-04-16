@@ -38,7 +38,8 @@ module.exports = function (app, swig, gestorBD) {
                         email: req.body.email,
                         password: seguro,
                         name: req.body.name,
-                        surname: req.body.surname
+                        surname: req.body.surname,
+                        friends:[]
                     };
                     gestorBD.insertarUsuario(usuario, function (id) {
                         if (id == null) {

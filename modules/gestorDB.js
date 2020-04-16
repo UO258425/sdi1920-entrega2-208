@@ -137,7 +137,7 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 let collection = db.collection('invitaciones');
-                collection.deleteOne(criterio, function (err, result) {
+                collection.deleteMany(criterio, function (err, result) {
                     if (err) {
                         funcionCallback(false);
                     } else {
