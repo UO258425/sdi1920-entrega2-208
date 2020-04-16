@@ -7,7 +7,7 @@ module.exports = function (app, gestorBD) {
             gestorBD.obtenerUsuarios({email: {$in: usuario[0].friends}}, function (friends) {
                 let friendsIDs = friends.map(friend => friend._id);
                 res.status(200);
-                res.json(friendsIDs);
+                res.json(friends);
             });
         });
     });
