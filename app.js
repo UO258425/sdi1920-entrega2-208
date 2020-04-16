@@ -71,7 +71,7 @@ routerUsuarioToken.use(function(req, res, next) {
     }
 });
 // Aplicar routerUsuarioToken
-app.use('/api', routerUsuarioToken);
+app.use('/api/amigos', routerUsuarioToken);
 
 
 // routerUsuarioSession
@@ -104,6 +104,8 @@ require("./routes/rusuarios.js")(app, swig, gestorBD);
 require("./routes/rinvitacion.js")(app, swig, gestorBD);
 require("./routes/ramigos.js")(app, swig, gestorBD);
 require("./routes/rerror.js")(app, swig);
+require("./routes/api/rapiautenticar.js")(app, gestorBD);
+require("./routes/api/rapiamigos.js")(app, gestorBD);
 
 
 app.get('/', function (req, res) {
