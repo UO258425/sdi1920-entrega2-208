@@ -100,7 +100,6 @@ app.set('clave', 'abcdefg');
 app.set('crypto', crypto);
 
 
-
 require("./routes/rusuarios.js")(app, swig, gestorBD);
 require("./routes/rinvitacion.js")(app, swig, gestorBD);
 require("./routes/ramigos.js")(app, swig, gestorBD);
