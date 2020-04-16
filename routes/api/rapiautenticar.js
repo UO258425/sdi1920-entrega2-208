@@ -25,7 +25,8 @@ module.exports = function (app, gestorBD) {
                 res.status(200);
                 res.json({
                     autenticado : true,
-                    token:token
+                    token:token,
+                    yourID: usuarios[0]._id
                 });
             }
         });

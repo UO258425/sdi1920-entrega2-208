@@ -35,6 +35,8 @@
             success: function(respuesta){
                 console.log(respuesta.token);
                 token = respuesta.token;
+                yourID = respuesta.yourID;
+                yourEmail = $("#email").val();
                 Cookies.set('token', respuesta.token);
                 $("#contenedor-principal").load("widget-amigos.html");
             },

@@ -1,0 +1,84 @@
+<div id="widget-detalles">
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Tu</th>
+            <th id="friendID"></th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="detalles-nombre">Mensaje:</label>
+        <div class="col-sm-10">
+            <input type="textarea" class="form-control" name="mensaje"
+                   placeholder="Tu mensaje" id="input-mensaje" />
+        </div>
+    </div>
+
+    <button onclick="enviar()" class="btn">Enviar</button>
+    <button onclick="widgetAmigos()" class="btn" >Volver</button>
+
+</div>
+
+<script>
+    $("#friendID").text(yourFriendFullName);
+
+
+    function cargarMensajes() {
+        $.ajax({
+            url: URLbase + "/mensajes",
+            type: "GET",
+            data: {},
+            dataType: 'json',
+            headers: {
+                "token": token,
+                user1: yourID,
+                user2: idAmigoSeleccionado
+            },
+            success: function (respuesta) {
+                mensajes = respuesta;
+                console.log(yourID);
+                console.log(idAmigoSeleccionado);
+                console.log(mensajes);
+                actualizarTabla(mensajes);
+            },
+            error: function (error) {
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+    function actualizarTabla(mensajes) {
+        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        for (i = 0; i < mensajes.length; i++) {
+            if(mensajes[i].from === yourEmail){
+                $("#tablaCuerpo").append(
+                    "<tr id=" + mensajes[i]._id + ">" +
+                    "<td>" + mensajes[i].text + "</td>" +
+                    "<td></td>" +
+                    "</tr>");
+            }
+            else{
+                $("#tablaCuerpo").append(
+                    "<tr id=" + mensajes[i]._id + ">" +
+                    "<td></td>" +
+                    "<td>" + mensajes[i].text + "</td>" +
+                    "</tr>");
+            }
+        }
+    }
+
+
+    cargarMensajes();
+
+    setInterval(function () {
+        cargarMensajes();
+    }, 5000);
+
+
+</script>
