@@ -67,7 +67,6 @@ module.exports = function (app, gestorBD) {
                             }
                         ]
                     };
-                    console.log(gestorBD.mongo.ObjectID("5e931ebfe0a145466c381efd"));
                     gestorBD.obtenerMensajes(criterio, function (mensajes) {
                         res.status(200);
                         res.json(mensajes);

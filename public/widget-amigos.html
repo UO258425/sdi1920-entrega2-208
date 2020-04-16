@@ -43,7 +43,7 @@
         for (i = 0; i < amigos.length; i++) {
             $("#tablaCuerpo").append(
                 "<tr id=" + amigos[i]._id + ">" +
-                "<td> <a onclick=conversacion('" +  amigos[i]._id+"','"+amigos[i].name+amigos[i].surname+"')>"+ amigos[i].name + "</a></td>" +
+                "<td> <a onclick=conversacion('" +  amigos[i]._id+"','"+amigos[i].name+amigos[i].surname+"','"+amigos[i].email+"')>"+ amigos[i].name + "</a></td>" +
                 "<td>" + amigos[i].surname + "</td>" +
                 "<td>" + amigos[i].email + "</td>" +
                 "</tr>");
@@ -67,9 +67,10 @@
         actualizarTabla(amigosFiltrados);
     });
 
-    function conversacion(_id, fullName) {
+    function conversacion(_id, fullName, email) {
         idAmigoSeleccionado = _id;
         yourFriendFullName = fullName;
+        yourFriendsEmail =email;
         $( "#contenedor-principal" ).load( "widget-conversacion.html");
     }
 

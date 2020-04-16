@@ -26,6 +26,28 @@
 </div>
 
 <script>
+    function enviar( ) {
+        $.ajax({
+            url: URLbase + "/mensajes",
+            type: "POST",
+            data: {
+                to : yourFriendsEmail,
+                text : $("#input-mensaje").val(),
+            },
+            dataType: 'json',
+            headers: { "token": token },
+            success: function(respuesta) {
+                console.log(respuesta); // <-- Prueba
+                //$( "#contenedor-principal" ).load( "widget-canciones.html");
+                cargarMensajes();
+
+            },
+            error : function (error){
+                $( "#contenedor-principal" ).load("widget-login.html");
+            }
+        });
+    }
+
     $("#friendID").text(yourFriendFullName);
 
 
