@@ -10,25 +10,27 @@ module.exports = function (app, gestorBD) {
         };
         gestorBD.obtenerUsuarios({email: res.usuario}, function (usuario) {
             gestorBD.obtenerUsuarios({email: {$in: usuario[0].friends}}, function (friends) {
-                if (friends.find(f => f.email === req.body.to).size === 0) {
+                if (friends.find(f => f.email === req.body.to) === undefined) {
                     res.status(400);
                     res.json({
                         message: "El destinatario no es tu amigo"
                     });
+                } else {
+                    gestorBD.insertarMensaje(mensaje, function (id) {
+                        if (!id) {
+                            res.status(500);
+                            res.json({
+                                message: "Error al enviar el mensaje"
+                            });
+                        } else {
+                            res.status(201);
+                            res.json({
+                                message: "Mensaje enviado"
+                            });
+                        }
+                    });
+
                 }
-                gestorBD.insertarMensaje(mensaje, function (id) {
-                    if (!id) {
-                        res.status(500);
-                        res.json({
-                            message: "Error al enviar el mensaje"
-                        });
-                    } else {
-                        res.status(201);
-                        res.json({
-                            message: "Mensaje enviado"
-                        });
-                    }
-                });
             });
         });
     });
@@ -45,9 +47,9 @@ module.exports = function (app, gestorBD) {
                 });
             } else {
                 let criterio2 = {
-                    $or:[
-                        {_id : gestorBD.mongo.ObjectID(user1Id)},
-                        {_id : gestorBD.mongo.ObjectID(user2Id)}
+                    $or: [
+                        {_id: gestorBD.mongo.ObjectID(user1Id)},
+                        {_id: gestorBD.mongo.ObjectID(user2Id)}
                     ]
                 };
                 gestorBD.obtenerUsuarios(criterio2, function (usuarios) {
