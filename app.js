@@ -1,5 +1,22 @@
+let log4js = require('log4js');
+log4js.configure({
+    appenders:{
+        console: {type: 'console', layout:{type:'colored'}},
+        file: {type: 'file', filename: 'mysocialnetwork.log'}
+    },
+    categories:{
+        default:{ appenders: ['console'], level: 'info'},
+        'complete log':{ appenders: ['console', 'file'], level: 'all'}
+    }
+});
+
+let logger = log4js.getLogger('complete log');
+
+
 let express = require('express');
 let app = express();
+
+app.set('logger', logger);
 
 let rest = require('request');
 app.set('rest',rest);
@@ -84,6 +101,7 @@ routerUsuarioSession.use(function (req, res, next) {
         // dejamos correr la petición
         next();
     } else {
+        app.get("logger").warn("Trying to access "+ req.originalUrl+" without being logged");
         res.redirect("/login");
     }
 });
@@ -122,11 +140,18 @@ app.get('/', function (req, res) {
 
 
 app.use(function(err,req,res,next){
-    console.log("Error producido: "+err);
+    app.get("logger").error("Error: "+err);
     if(!res.headersSent){
         res.status(400);
         res.send("Recurso no disponible");
     }
+});
+
+app.get('*', function (req, res) {
+    logger.error("Error 404: "+req.originalUrl);
+    res.send(swig.renderFile("views/404.html",  {
+        requested:req.originalUrl
+    }));
 });
 
 
@@ -134,5 +159,6 @@ https.createServer({
     key: fs.readFileSync('certificates/alice.key'),
     cert: fs.readFileSync('certificates/alice.crt')
 }, app).listen(app.get('port'), function() {
-    console.log("Servidor activo");
+    logger.info("Server active");
 });
+

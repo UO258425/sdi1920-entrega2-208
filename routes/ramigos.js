@@ -29,6 +29,7 @@ module.exports = function (app, swig, gestorBD) {
                 email: {$in: friends}
             };
             gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+                app.get("logger").info("User "+req.session.usuario+" listed page "+pg+ " of friends");
                 let respuesta = swig.renderFile('views/amigos.html',
                     {
                         friends: usuarios,

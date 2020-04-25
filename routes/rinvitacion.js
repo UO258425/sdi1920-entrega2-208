@@ -6,11 +6,13 @@ module.exports = function (app, swig, gestorBD) {
 
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios[0] === null) {
+                app.get("logger").warn(req.session.usuario+" tried to send a invitation to a non existing user");
                 req.session.mensaje = "Error: el usuario no existe";
                 req.session.tipoMensaje = "alert-danger";
                 res.redirect("/usuarios");
             } else {
                 if (usuarios[0].email === req.session.usuario) {
+                    app.get("logger").warn(req.session.usuario+" tried to send a invitation to himself");
                     req.session.mensaje = "Error: no puedes enviarte una petición a ti mismo";
                     req.session.tipoMensaje = "alert-danger";
                     res.redirect("/usuarios");
@@ -31,16 +33,19 @@ module.exports = function (app, swig, gestorBD) {
                         }
                         gestorBD.insertarInvitacion(invitacion, function (id) {
                             if (id == null) {
+                                app.get("logger").error("Error while storing a invitation in the database");
                                 req.session.mensaje = "Error al añadir invitacion: Hay un problema con nuestros servidores :(";
                                 req.session.tipoMensaje = "alert-danger";
                                 res.redirect("/usuarios");
                             } else {
+                                app.get("logger").info(req.session.usuario+" send a invitation to "+usuarios[0].email);
                                 req.session.mensaje = "Invitacion enviada";
                                 req.session.tipoMensaje = "alert-success";
                                 res.redirect('/usuarios');
                             }
                         });
                     } else {
+                        app.get("logger").warn(req.session.usuario+" tried to send a repeated invitation");
                         req.session.mensaje = "Error: ya hay una petición pendiente";
                         req.session.tipoMensaje = "alert-danger";
                         res.redirect("/usuarios");
@@ -61,6 +66,7 @@ module.exports = function (app, swig, gestorBD) {
         }
         gestorBD.obtenerInvitacionesPg(criterio, pg, function (invitaciones, total) {
             if (invitaciones == null) {
+                app.get("logger").error("Error at listing invitations");
                 res.send("Error al listar ");
             } else {
                 let ultimaPg = total / 4;
@@ -76,6 +82,7 @@ module.exports = function (app, swig, gestorBD) {
                 let criterio = {};
                 gestorBD.obtenerUsuarios(criterio, function (users) {
                     if (users == null) {
+                        app.get("logger").error("Error at listing invitations");
                         res.send("Error al listar ");
                     } else {
                         let invitacionesCompletas = invitaciones.map(invi => {
@@ -95,6 +102,7 @@ module.exports = function (app, swig, gestorBD) {
                             });
                         req.session.mensaje = null;
                         req.session.tipoMensaje = null;
+                        app.get("logger").info("User "+req.session.usuario+" listed page "+pg+ " of invitations");
                         res.send(respuesta);
                     }
                 });

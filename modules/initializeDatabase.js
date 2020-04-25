@@ -1,9 +1,11 @@
+let logger = null;
 module.exports = {
     mongo: null,
     app: null,
     init: function (app, mongo) {
         this.mongo = mongo;
         this.app = app;
+        logger = app.get("logger");
     },
     deleteAllUsuarios: function () {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
@@ -15,7 +17,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("usuarios eliminados");
+                        logger.trace("Collection usuarios deleted");
                         module.exports.insertarAllUsuarios();
                     }
                     db.close();
@@ -33,7 +35,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("mensajes eliminados");
+                        logger.trace("Collection mensajes deleted");
                         module.exports.insertarAllMensajes();
                     }
                     db.close();
@@ -51,7 +53,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("invitaciones eliminadas");
+                        logger.trace("Collection invitaciones deleted");
                         module.exports.insertarAllInvitaciones();
                     }
                     db.close();
@@ -85,7 +87,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("usuarios creados");
+                        logger.trace("Collection usuarios restarted");
                     }
                     db.close();
                 });
@@ -120,7 +122,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("mensajes creados");
+                        logger.trace("Collection mensajes restarted");
 
                     }
                     db.close();
@@ -154,8 +156,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("invitaciones creadas");
-
+                        logger.trace("Collection invitaciones restarted");
                     }
                     db.close();
                 });
@@ -163,19 +164,15 @@ module.exports = {
         });
     },
     restartDatabase: function () {
-        console.log("*** Reiniciando base de datos ***");
+        this.app.get("logger").trace("Restarting database. Deleting all collections and inserting new ones");
+
         module.exports.deleteAllUsuarios();
         module.exports.deleteAllMensajes();
         module.exports.deleteAllInvitaciones();
 
+
+    },
+    logCompleteAction: function(collection){
     }
 
 };
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds) {
-            break;
-        }
-    }
-}

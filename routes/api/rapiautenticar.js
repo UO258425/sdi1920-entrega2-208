@@ -13,11 +13,13 @@ module.exports = function (app, gestorBD) {
 
         gestorBD.obtenerUsuarios(criterio, function(usuarios){
             if(usuarios == null || usuarios.length === 0){
+                app.get("logger").warn("API: User "+criterio.email+" tried to autenticate and failed");
                 res.status(401);
                 res.json({
                     autenticado : false
                 });
             }else{
+                app.get("logger").info("API: User "+criterio.email+" autenticated");
                 var token = app.get('jwt').sign({
                     usuario:criterio.email,
                     tiempo: Date.now()/1000

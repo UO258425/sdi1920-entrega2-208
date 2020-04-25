@@ -43,16 +43,19 @@ module.exports = function (app, swig, gestorBD) {
                     };
                     gestorBD.insertarUsuario(usuario, function (id) {
                         if (id == null) {
+                            app.get("logger").error("Error trying to register new user with email "+req.body.email);
                             req.session.mensaje = "Error al registrar usuario: Hay un problema con nuestros servidores :(";
                             req.session.tipoMensaje = "alert-danger";
                             res.redirect("/error");
                         } else {
+                            app.get("logger").info("New user registered with email "+req.body.email);
                             req.session.mensaje = "Nuevo usuario registrado";
                             req.session.tipoMensaje = "alert-success";
                             res.redirect('/login');
                         }
                     });
                 } else {
+                    app.get("logger").warn("Trying to register new user with the existing email "+req.body.email);
                     req.session.mensaje = "Error al registrar usuario: No puede registrarse con ese email";
                     res.redirect("/signin");
                 }
@@ -88,11 +91,13 @@ module.exports = function (app, swig, gestorBD) {
             }
             gestorBD.obtenerUsuarios(criterio, function (usuarios) {
                 if (usuarios == null || usuarios.length === 0) {
+                    app.get("logger").warn("Bad login attempt with user "+req.body.email);
                     req.session.usuario = null;
                     req.session.mensaje = "Email o password incorrecto";
                     req.session.tipoMensaje = "alert-danger";
                     res.redirect("/login");
                 } else {
+                    app.get("logger").info("User "+ usuarios[0].email+" logged in");
                     req.session.usuario = usuarios[0].email;
                     req.session.favoritos = [];
                     res.redirect("/");
@@ -102,6 +107,7 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.get('/logout', function (req, res) {
+        app.get("logger").info("User "+req.session.usuario+" logged out");
         req.session.usuario = null;
         req.session.mensaje = "Usuario desconectado";
         req.session.tipoMensaje = "alert-success";
@@ -127,6 +133,7 @@ module.exports = function (app, swig, gestorBD) {
         }
         gestorBD.obtenerUsuariosPg(criterio, pg, function (users, total) {
             if (users == null) {
+                app.get("logger").error("Error al listar usuarios");
                 res.send("Error al listar ");
             } else {
                 let ultimaPg = total / 4;
@@ -140,7 +147,7 @@ module.exports = function (app, swig, gestorBD) {
                     }
                 }
                 gestorBD.obtenerUsuarios({email:req.session.usuario}, function(usuarios){
-
+                    app.get("logger").info("User "+req.session.usuario+" listed page "+pg+ " of users");
                     let respuesta = swig.renderFile('views/usersList.html',
                         {
                             users: users,

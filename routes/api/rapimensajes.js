@@ -12,6 +12,7 @@ module.exports = function (app, gestorBD) {
             gestorBD.obtenerUsuarios({email: {$in: usuario[0].friends}}, function (friends) {
                 if (friends.find(f => f.email === req.body.to) === undefined) {
                     res.status(400);
+                    app.get("logger").warn("API: "+res.usuario+" tried to send a message to a non friend");
                     res.json({
                         message: "El destinatario no es tu amigo"
                     });
@@ -19,10 +20,12 @@ module.exports = function (app, gestorBD) {
                     gestorBD.insertarMensaje(mensaje, function (id) {
                         if (!id) {
                             res.status(500);
+                            app.get("logger").error("API: Error while storing a message");
                             res.json({
                                 message: "Error al enviar el mensaje"
                             });
                         } else {
+                            app.get("logger").warn("API: "+res.usuario+" sent a message to "+req.body.to);
                             res.status(201);
                             res.json({
                                 message: "Mensaje enviado"
@@ -41,6 +44,7 @@ module.exports = function (app, gestorBD) {
 
         gestorBD.obtenerUsuarios({email: res.usuario}, function (usuario) {
             if (usuario[0]._id.toString() !== user1Id && usuario[0]._id.toString() !== user2Id) {
+                app.get("logger").warn("API: "+res.usuario+" tried to read a conversation to which he does not belong");
                 res.status(400);
                 res.json({
                     message: "No formas parte de la conversacion"
@@ -70,6 +74,7 @@ module.exports = function (app, gestorBD) {
                         ]
                     };
                     gestorBD.obtenerMensajes(criterio, function (mensajes) {
+                        app.get("logger").info("API: "+res.usuario+" reads a conversation");
                         res.status(200);
                         res.json(mensajes);
                     });
@@ -84,6 +89,7 @@ module.exports = function (app, gestorBD) {
     app.put("/api/mensajes/", function (req, res) {
 
         if(req.body.messageId.length !== 24){
+            app.get("logger").warn("API: "+res.usuario+" tried to mark as readed a message with invalid id");
             res.status(400);
             res.json({
                 message: "El id debe tener una longitud de 24 caracteres"
@@ -94,6 +100,7 @@ module.exports = function (app, gestorBD) {
         gestorBD.obtenerMensajes({_id: gestorBD.mongo.ObjectID(req.body.messageId)}, function (messages) {
             if (messages[0] === undefined) {
                 res.status(404);
+                app.get("logger").warn("API: "+res.usuario+" tried to mark as readed an unexisting message");
                 res.json({
                     message: "El mensaje no existe"
                 });
@@ -109,11 +116,13 @@ module.exports = function (app, gestorBD) {
                     gestorBD.modificarMensaje({_id: mensaje._id}, mensaje, function (result) {
                         if (result === null) {
                             res.status(500);
+                            app.get("logger").error("API: Error while marking a message as readed");
                             res.json({
                                 message: "Hubo un problema en el servidor al marcar como leído"
                             });
                         }else{
                             res.status(204);
+                            app.get("logger").info("API: "+res.usuario+" marked the message "+req.body.messageId+" as readed");
                             res.json({
                                 success: true,
                                 message: "Mensaje marcado como leído"
@@ -121,6 +130,7 @@ module.exports = function (app, gestorBD) {
                         }
                     });
                 } else {
+                    app.get("logger").warn("API: "+res.usuario+" tried to mark as readed a message that does not belong to him");
                     res.status(401);
                     res.json({
                         message: "El mensaje no pertenece a ninguna de tus conversaciones"
