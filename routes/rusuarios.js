@@ -1,5 +1,10 @@
 module.exports = function (app, swig, gestorBD) {
 
+    /**
+     * Muestra la vista de registro.
+     * En el caso de que haya habido errores, se muestran y luego se borran de sesion
+     * para que no se propaguen por el resto de vistas
+     */
     app.get("/signin", function (req, res) {
         let respuesta = swig.renderFile('views/register.html', {
             mensaje: req.session.mensaje,
@@ -10,6 +15,13 @@ module.exports = function (app, swig, gestorBD) {
         res.send(respuesta);
     });
 
+    /**
+     * Primero se comprueba que no hay campos vacios, despues que las contraseñas coincidadn.
+     * Despues se comprueba en la base de datos si ya existe un usuario con ese email registrado
+     * en el sistema.
+     * Si se cumplen todas las condiciones se registra el usuario. Si no, se redirige al registro y se muestra el error
+     * en pantalla
+     */
     app.post('/signin', function (req, res) {
 
         req.session.tipoMensaje = "alert-danger";
@@ -63,6 +75,11 @@ module.exports = function (app, swig, gestorBD) {
         }
     });
 
+    /**
+     * Muestra la vista de login.
+     * En el caso de que haya habido errores, se muestran y luego se borran de sesion
+     * para que no se propaguen por el resto de vistas
+     */
     app.get("/login", function (req, res) {
         let respuesta = swig.renderFile('views/login.html', {
             mensaje: req.session.mensaje,
@@ -73,6 +90,16 @@ module.exports = function (app, swig, gestorBD) {
         res.send(respuesta);
     });
 
+    /**
+     * Inicar sesión
+     *
+     * Primero se comprueba que los valores sean válidos.
+     * Despues se hace una consulta a la BD y se comprueba que existe
+     * un usuario con esa contraseña(cifrada con sha256)
+     *
+     * Si existe se registra su email en la sesión actual y se redirige a home
+     * En caso contrario se muestra la vista de login de nuevo con su error correspondiente
+     */
     app.post("/login", function (req, res) {
         if (!req.body.email) {
             req.session.tipoMensaje = "alert-danger";
@@ -106,6 +133,11 @@ module.exports = function (app, swig, gestorBD) {
         }
     });
 
+    /**
+     * Se borra al usuario de la sesion actual.
+     * Se muestra un alert al usuario para informarle de que su sesión se ha cerrado correctamente mientras se le redirige
+     * al login
+     */
     app.get('/logout', function (req, res) {
         app.get("logger").info("User "+req.session.usuario+" logged out");
         req.session.usuario = null;
@@ -115,7 +147,12 @@ module.exports = function (app, swig, gestorBD) {
    });
 
 
-
+    /**
+     * En el caso de que se haya producido una busqueda se procesa la query y se añade al criterio
+     * Si se ha solicitado una pagina en concreto, se detecta que pagina es y se añade a la query, en caso contrario se
+     * meuestra por defecto la pagina 1.
+     * Se crea una consulta a la base de datos y se muestran en la vista usersList
+     */
     app.get("/usuarios/", function(req,res){
         let criterio = {};
         if (req.query.busqueda != null && req.query.busqueda !== "") {

@@ -1,6 +1,12 @@
 module.exports = function (app, swig, gestorBD) {
 
 
+    /**
+     * En el caso de que se haya producido una busqueda se procesa la query y se añade al criterio
+     * Si se ha solicitado una pagina en concreto, se detecta que pagina es y se añade a la query, en caso contrario se
+     * meuestra por defecto la pagina 1.
+     * Se crea una consulta a la base de datos y se muestran en la vista amigos.html
+     */
     app.get('/amigos', function (req, res) {
         let criterio = {
             email: req.session.usuario

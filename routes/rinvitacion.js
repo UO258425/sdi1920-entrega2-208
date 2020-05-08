@@ -1,5 +1,12 @@
 module.exports = function (app, swig, gestorBD) {
 
+    /**
+     * Se comprueba que el id enviado como parametro es de un usuario existente, no es el de la persona que manda
+     * la invitacion.
+     * Tambien se comprueba que no existe ninguna peticion a esa misma persona para evitar duplicados.
+     * Si es correcto se guarda en la base de datos, si no se redirige a la vista de usuarios y se muestra el error
+     *
+     */
     app.get('/invitacion/enviar/:to_id', function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.to_id)};
@@ -55,6 +62,12 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /**
+     * Se crea una peticion a la base de datos (se incluye el numero de paginacion en caso de que se haya solicitado)
+     * Despues se crea otra peticion para completar la informacion de las invitaciones(nombre, apellidos) ya que solo almacenan
+     * el id de la otra persona.
+     * Por ultimo se muestran en la vista invitaciones
+     */
     app.get('/invitaciones', function (req, res) {
         let criterio = {
             to: req.session.usuario
@@ -112,6 +125,12 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /**
+     * Primero se comprueba que la invitacion existe
+     * Despues se comprueba que el usario que mandó la invitacion sigue existiendo en el sistema.
+     * Se añade a cada usuario en la lista de amigos del otro usuario  y posteriormente se borra la invitacion
+     *
+     */
     app.get('/invitacion/aceptar/:invitacion_id', function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.invitacion_id)};
