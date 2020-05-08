@@ -7,7 +7,7 @@
             <th id="friendID"></th>
         </tr>
         </thead>
-        <tbody id="tablaCuerpo">
+        <tbody id="tablaConversacion">
 
         </tbody>
     </table>
@@ -21,86 +21,8 @@
     </div>
 
     <button id='btn-enviar' onclick="enviar()" class="btn">Enviar</button>
-    <button id='btn-volver' onclick="widgetAmigos()" class="btn" >Volver</button>
+    <button id='btn-volver' onclick="loadWidgetAmigos()" class="btn" >Volver</button>
 
 </div>
 
-<script>
-    function enviar( ) {
-        $.ajax({
-            url: URLbase + "/mensajes",
-            type: "POST",
-            data: {
-                to : yourFriendsEmail,
-                text : $("#input-mensaje").val(),
-            },
-            dataType: 'json',
-            headers: { "token": token },
-            success: function(respuesta) {
-                console.log(respuesta); // <-- Prueba
-                //$( "#contenedor-principal" ).load( "widget-canciones.html");
-                cargarMensajes();
-
-            },
-            error : function (error){
-                $( "#contenedor-principal" ).load("widget-login.html");
-            }
-        });
-    }
-
-    $("#friendID").text(yourFriendFullName);
-
-
-    function cargarMensajes() {
-        $.ajax({
-            url: URLbase + "/mensajes",
-            type: "GET",
-            data: {},
-            dataType: 'json',
-            headers: {
-                "token": token,
-                user1: yourID,
-                user2: idAmigoSeleccionado
-            },
-            success: function (respuesta) {
-                mensajes = respuesta;
-                console.log(yourID);
-                console.log(idAmigoSeleccionado);
-                console.log(mensajes);
-                actualizarTabla(mensajes);
-            },
-            error: function (error) {
-                $("#contenedor-principal").load("widget-login.html");
-            }
-        });
-    }
-
-    function actualizarTabla(mensajes) {
-        $("#tablaCuerpo").empty(); // Vaciar la tabla
-        for (i = 0; i < mensajes.length; i++) {
-            if(mensajes[i].from === yourEmail){
-                $("#tablaCuerpo").append(
-                    "<tr id=" + mensajes[i]._id + ">" +
-                    "<td>" + mensajes[i].text + "</td>" +
-                    "<td></td>" +
-                    "</tr>");
-            }
-            else{
-                $("#tablaCuerpo").append(
-                    "<tr id=" + mensajes[i]._id + ">" +
-                    "<td></td>" +
-                    "<td>" + mensajes[i].text + "</td>" +
-                    "</tr>");
-            }
-        }
-    }
-
-
-    cargarMensajes();
-
-    setInterval(function () {
-        cargarMensajes();
-    }, 1000);
-
-
-</script>
+<script src="js/conversacion.js"></script>
